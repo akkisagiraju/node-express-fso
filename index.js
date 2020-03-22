@@ -18,6 +18,20 @@ app.use(
   morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
 
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' });
+};
+
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return res.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message });
+  }
+  next(error);
+};
+
 app.get('/api/persons', (req, res) => {
   Person.find({})
     .then(result => {
@@ -31,6 +45,11 @@ app.get('/api/persons', (req, res) => {
 
 app.post('/api/persons', (req, res, next) => {
   const { name, number } = req.body;
+  if (!name || !number) {
+    return res.status(400).json({
+      error: 'content missing'
+    });
+  }
   const person = new Person({
     name,
     number
@@ -97,22 +116,7 @@ app.get('/info', (req, res) => {
     });
 });
 
-const unknownEndpoint = (req, res) => {
-  res.status(404).send({ error: 'unknown endpoint' });
-};
-
 app.use(unknownEndpoint);
-
-const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
-  if (error.name === 'CastError' && error.kind === 'ObjectId') {
-    return res.status(400).send({ error: 'malformatted id' });
-  } else if (error.name === 'ValidationError') {
-    return res.status(400).json({ error: error.message });
-  }
-  next(error);
-};
-
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
