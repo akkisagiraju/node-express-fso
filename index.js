@@ -29,26 +29,20 @@ app.get('/api/persons', (req, res) => {
     });
 });
 
-app.post('/api/persons', (req, res) => {
-  const body = req.body;
-  if (body.name === undefined && body.number === undefined) {
-    return res.status(400).json({ error: 'content missing' });
-  }
-
+app.post('/api/persons', (req, res, next) => {
+  const { name, number } = req.body;
   const person = new Person({
-    name: body.name,
-    number: body.number
+    name,
+    number
   });
 
   person
     .save()
-    .then(savedPerson => {
-      res.json(savedPerson.toJSON());
+    .then(savedPerson => savedPerson.toJSON())
+    .then(savedAndFormattedPerson => {
+      res.json(savedAndFormattedPerson);
     })
-    .catch(error => {
-      console.log(error);
-      response.status(404).end();
-    });
+    .catch(error => next(error));
 });
 
 app.get('/api/persons/:id', (req, res) => {
