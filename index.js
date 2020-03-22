@@ -21,6 +21,7 @@ app.use(
 app.get('/api/persons', (req, res) => {
   Person.find({})
     .then(result => {
+      console.log(result);
       res.json(result.map(person => person.toJSON()));
     })
     .catch(error => {
