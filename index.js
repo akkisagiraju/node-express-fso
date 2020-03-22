@@ -22,13 +22,12 @@ app.get('/api/persons', (req, res) => {
   Person.find({}).then(result => {
     res.json(result.map(person => person.toJSON()));
   });
-  res.json(persons);
 });
 
 app.post('/api/persons', (req, res) => {
   const body = req.body;
   if (body.name === undefined && body.number === undefined) {
-    return response.status(400).json({ error: 'content missing' });
+    return res.status(400).json({ error: 'content missing' });
   }
 
   const person = new Person({
@@ -37,27 +36,27 @@ app.post('/api/persons', (req, res) => {
   });
 
   person.save().then(savedPerson => {
-    response.json(savedPerson.toJSON());
+    res.json(savedPerson.toJSON());
   });
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  Person.findById(request.params.id).then(person => {
-    response.json(person.toJSON());
+  Person.findById(req.params.id).then(person => {
+    res.json(person.toJSON());
   });
 });
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter(person => person.id !== id);
-  res.status(204).end();
-});
+// app.delete('/api/persons/:id', (req, res) => {
+//   const id = Number(req.params.id);
+//   persons = persons.filter(person => person.id !== id);
+//   res.status(204).end();
+// });
 
-app.get('/info', (req, res) => {
-  res.send(
-    `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
-  );
-});
+// app.get('/info', (req, res) => {
+//   res.send(
+//     `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
+//   );
+// });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
