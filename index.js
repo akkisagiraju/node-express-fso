@@ -19,9 +19,13 @@ app.use(
 );
 
 app.get('/api/persons', (req, res) => {
-  Person.find({}).then(result => {
-    res.json(result.map(person => person.toJSON()));
-  });
+  Person.find({})
+    .then(result => {
+      res.json(result.map(person => person.toJSON()));
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 app.post('/api/persons', (req, res) => {
@@ -35,15 +39,24 @@ app.post('/api/persons', (req, res) => {
     number: body.number
   });
 
-  person.save().then(savedPerson => {
-    res.json(savedPerson.toJSON());
-  });
+  person
+    .save()
+    .then(savedPerson => {
+      res.json(savedPerson.toJSON());
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  Person.findById(req.params.id).then(person => {
-    res.json(person.toJSON());
-  });
+  Person.findById(req.params.id)
+    .then(person => {
+      res.json(person.toJSON());
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
 
 // app.delete('/api/persons/:id', (req, res) => {
