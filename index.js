@@ -21,7 +21,6 @@ app.use(
 app.get('/api/persons', (req, res) => {
   Person.find({})
     .then(result => {
-      console.log(result);
       res.json(result.map(person => person.toJSON()));
     })
     .catch(error => {
@@ -66,11 +65,19 @@ app.get('/api/persons/:id', (req, res) => {
 //   res.status(204).end();
 // });
 
-// app.get('/info', (req, res) => {
-//   res.send(
-//     `<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`
-//   );
-// });
+app.get('/info', (req, res) => {
+  Person.find({})
+    .then(result => {
+      res.send(
+        `<p>Phonebook has info for ${
+          result.length
+        } people</p><p>${new Date()}</p>`
+      );
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
