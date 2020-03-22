@@ -1,36 +1,10 @@
 const express = require('express');
+require('dotenv').config();
 const morgan = require('morgan');
 const cors = require('cors');
+const Person = require('./models/Person');
 
 const app = express();
-
-let persons = [
-  {
-    name: 'Bottom Bottompit',
-    number: '39-44-5323523',
-    id: 1
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: 2
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: 4
-  },
-  {
-    name: 'Akhil',
-    number: '23424',
-    id: 5
-  }
-];
 
 app.use(cors());
 app.use(express.static('build'));
@@ -45,33 +19,32 @@ app.use(
 );
 
 app.get('/api/persons', (req, res) => {
+  Person.find({}).then(result => {
+    res.json(result.map(person => person.toJSON()));
+  });
   res.json(persons);
 });
 
 app.post('/api/persons', (req, res) => {
-  const { name, number } = req.body;
-  if (!name || !number) {
-    return res.status(400).json({
-      error: 'name or number missing'
-    });
-  } else if (persons.map(person => person.name).indexOf(name) > -1) {
-    return res.status(400).json({
-      error: 'name must be unique'
-    });
+  const body = req.body;
+  if (body.name === undefined && body.number === undefined) {
+    return response.status(400).json({ error: 'content missing' });
   }
-  const newPerson = {
-    name,
-    number,
-    id: Math.floor(Math.random() * 234)
-  };
-  persons = persons.concat(newPerson);
-  res.status(201).send(newPerson);
+
+  const person = new Person({
+    name: body.name,
+    number: body.number
+  });
+
+  person.save().then(savedPerson => {
+    response.json(savedPerson.toJSON());
+  });
 });
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find(person => person.id === id);
-  res.json(person);
+  Person.findById(request.params.id).then(person => {
+    response.json(person.toJSON());
+  });
 });
 
 app.delete('/api/persons/:id', (req, res) => {
