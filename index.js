@@ -39,7 +39,7 @@ app.get('/api/persons', (req, res) => {
     })
     .catch(error => {
       console.log(error);
-      response.status(404).end();
+      res.status(404).end();
     });
 });
 
@@ -73,14 +73,14 @@ app.get('/api/persons/:id', (req, res) => {
         res.status(404).end();
       }
     })
-    .catch(error => {
-      response.status(400).send({ error: 'malformatted id' });
+    .catch(() => {
+      res.status(400).send({ error: 'malformatted id' });
     });
 });
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(_result => {
+    .then(() => {
       res.status(204).end();
     })
     .catch(error => next(error));
@@ -112,7 +112,7 @@ app.get('/info', (req, res) => {
     })
     .catch(error => {
       console.log(error);
-      response.status(404).end();
+      res.status(404).end();
     });
 });
 
