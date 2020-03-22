@@ -25,6 +25,7 @@ app.get('/api/persons', (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      response.status(404).end();
     });
 });
 
@@ -46,6 +47,7 @@ app.post('/api/persons', (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      response.status(404).end();
     });
 });
 
@@ -56,6 +58,7 @@ app.get('/api/persons/:id', (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      response.status(404).end();
     });
 });
 
@@ -76,6 +79,7 @@ app.get('/info', (req, res) => {
     })
     .catch(error => {
       console.log(error);
+      response.status(404).end();
     });
 });
 
