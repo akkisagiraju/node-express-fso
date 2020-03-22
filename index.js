@@ -33,6 +33,7 @@ let persons = [
 ];
 
 app.use(cors());
+app.use(express.static('build'));
 app.use(express.json());
 
 morgan.token('body', function getBody(req) {
