@@ -32,12 +32,16 @@ const errorHandler = (error, req, res, next) => {
   next(error);
 };
 
+app.get('/api/dummy', (req, res) => {
+  res.status(200).json({ message: 'Hello' });
+});
+
 app.get('/api/persons', (req, res) => {
   Person.find({})
-    .then(result => {
-      res.json(result.map(person => person.toJSON()));
+    .then((result) => {
+      res.json(result.map((person) => person.toJSON()));
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(error);
       res.status(404).end();
     });
@@ -47,26 +51,26 @@ app.post('/api/persons', (req, res, next) => {
   const { name, number } = req.body;
   if (!name || !number) {
     return res.status(400).json({
-      error: 'content missing'
+      error: 'content missing',
     });
   }
   const person = new Person({
     name,
-    number
+    number,
   });
 
   person
     .save()
-    .then(savedPerson => savedPerson.toJSON())
-    .then(savedAndFormattedPerson => {
+    .then((savedPerson) => savedPerson.toJSON())
+    .then((savedAndFormattedPerson) => {
       res.json(savedAndFormattedPerson);
     })
-    .catch(error => next(error));
+    .catch((error) => next(error));
 });
 
 app.get('/api/persons/:id', (req, res) => {
   Person.findById(req.params.id)
-    .then(person => {
+    .then((person) => {
       if (person) {
         res.json(person.toJSON());
       } else {
@@ -83,7 +87,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .then(() => {
       res.status(204).end();
     })
-    .catch(error => next(error));
+    .catch((error) => next(error));
 });
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -91,26 +95,26 @@ app.put('/api/persons/:id', (req, res, next) => {
 
   const person = {
     name,
-    number
+    number,
   };
 
   Person.findByIdAndUpdate(req.params.id, person, { new: true })
-    .then(updatedNumber => {
+    .then((updatedNumber) => {
       res.json(updatedNumber.toJSON());
     })
-    .catch(error => next(error));
+    .catch((error) => next(error));
 });
 
 app.get('/info', (req, res) => {
   Person.find({})
-    .then(result => {
+    .then((result) => {
       res.send(
         `<p>Phonebook has info for ${
           result.length
         } people</p><p>${new Date()}</p>`
       );
     })
-    .catch(error => {
+    .catch((error) => {
       console.log(error);
       res.status(404).end();
     });
