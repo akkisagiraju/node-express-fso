@@ -36,7 +36,7 @@ app.get('/api/dummy', (req, res) => {
   res.status(200).json({ message: 'Hello' });
 });
 
-app.post('api/dummy', (req, res) => {
+app.post('/api/dummy', (req, res) => {
   res.status(200).json({ message: 'Hello' });
 });
 
